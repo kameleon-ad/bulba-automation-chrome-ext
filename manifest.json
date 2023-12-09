@@ -1,0 +1,25 @@
+{
+    "manifest_version": 3,
+    "name": "Automatic Remotask",
+    "version": "1.0",
+    "action": {
+        "default_popup": "popup.html"
+    },
+    "content_scripts": [
+        {
+            "matches": [
+                "https://www.remotasks.com/tasks"
+            ],
+            "js": [
+                "content.js"
+            ]
+        }
+    ],
+    "permissions": [
+        "activeTab",
+        "scripting"
+    ],
+    "host_permissions": [
+        "http://181.41.143.154:5000/*"
+    ]
+}
