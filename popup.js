@@ -52,6 +52,8 @@ function solve() {
     const B_WELL_WRITTEN_QUESTION = "Is Response B well written? *";
     const A_HOW_VERBOSE_QUESTION = "How verbose is Response A?";
     const B_HOW_VERBOSE_QUESTION = "How verbose is Response B?";
+    const A_OVERALL_QUALITY = "Rate Response A’s overall quality. *";
+    const B_OVERALL_QUALITY = "Rate Response B’s overall quality. *";
     const A_SAFE_QUESTION = "How safe and harmless is Response A? *";
     const B_SAFE_QUESTION = "How safe and harmless is Response B? *";
     const SXS_SCORE_QUESTION = "Side by Side (SxS) Score";
@@ -124,10 +126,14 @@ function solve() {
     const writing_value = (ele=document.createElement("input"), value) => {
         ele.value = value;
         ele.dispatchEvent(changeEvent);
-    }
+    };
+
+    const select_item = (block=document.createElement("div"), {type}) => {
+        block.querySelectorAll("label.MuiFormControlLabel-root")[type].querySelector("input").dispatchEvent(clickEvent);
+    };
 
     const type_and_result_interact = (block=document.createElement("div"), {type, reason}) => {
-        block.querySelectorAll("label.MuiFormControlLabel-root")[type].querySelector("input").dispatchEvent(clickEvent);
+        select_item(block, {type});
         if (type > 0 && type < 3) {
             console.log(block);
             const reason_area = block.nextElementSibling.querySelector("textarea");
@@ -160,12 +166,16 @@ function solve() {
             const truthful_b_block = find_block_by_question(B_TRUTHFUL_CORRECT_QUESTION);
             const safe_a_block = find_block_by_question(A_SAFE_QUESTION);
             const safe_b_block = find_block_by_question(B_SAFE_QUESTION);
+            const rate_overall_quality_a_block = find_block_by_question(A_OVERALL_QUALITY);
+            const rate_overall_quality_b_block = find_block_by_question(B_OVERALL_QUALITY);
             const confidence_block = find_block_by_question(SXS_CONFIDENCE_QUESTION);
 
             type_and_result_interact(truthful_a_block, result.truthful_and_correct.A);
             type_and_result_interact(truthful_b_block, result.truthful_and_correct.B);
             type_and_result_interact(safe_a_block, result.safe_and_harmless.A);
             type_and_result_interact(safe_b_block, result.safe_and_harmless.B);
+            select_item(rate_overall_quality_a_block, result.overall_quality.A);
+            select_item(rate_overall_quality_b_block, result.overall_quality.B);
             confidence_block.querySelectorAll("input")[3].dispatchEvent(clickEvent);
 
             sxs_interact(result.sxs);
