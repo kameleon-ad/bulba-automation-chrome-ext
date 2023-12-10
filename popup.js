@@ -59,9 +59,18 @@ function solve() {
     const SXS_SCORE_QUESTION = "Side by Side (SxS) Score";
     const SXS_SCORE_EXPLANATION_QUESTION = "SxS Score Explanation *";
     const SXS_CONFIDENCE_QUESTION = "SxS Confidence: Rate your confidence level in your assessment *";
+    function extractAlphabets(str) {
+      // This regex matches any alphabetic character
+      const matches = str.match(/[A-Za-z]+/g);
+      // The match method returns an array of all matches
+      // Join the array elements into a single string
+      return matches ? matches.join('') : '';
+    }
 
     const find_block_by_question = (question, tag="span") => {
-        let rlt = Array.from(document.querySelectorAll(tag)).find(element => element.innerText === question);
+        let rlt = Array
+            .from(document.querySelectorAll(tag))
+            .find(element => extractAlphabets(element.innerText) === extractAlphabets(question));
         while (rlt.getAttribute("tabindex") !== "0") {
             rlt = rlt.parentElement;
         }
@@ -187,27 +196,29 @@ function solve() {
         .map(element => element.innerHTML);
     let api_link = 'http://181.41.143.154:5000/api/bulba_v2';
 
-    fetch(api_link, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: new URLSearchParams({
-            prompt,
-            response_a,
-            response_b,
-        }),
-        redirect: 'follow',
-    }).then(res => res.json())
-    .then(result => {
-        interact_related(result)
-            .then(() => {
-                check_category_select_dep()
-                    .then(() => {
-                        interact_category(result);
-                    });
-            });
-    });
+    console.log(find_block_by_question(A_OVERALL_QUALITY))
+
+    // fetch(api_link, {
+    //     method: 'POST',
+    //     headers: {
+    //         'Content-Type': 'application/x-www-form-urlencoded',
+    //     },
+    //     body: new URLSearchParams({
+    //         prompt,
+    //         response_a,
+    //         response_b,
+    //     }),
+    //     redirect: 'follow',
+    // }).then(res => res.json())
+    // .then(result => {
+    //     interact_related(result)
+    //         .then(() => {
+    //             check_category_select_dep()
+    //                 .then(() => {
+    //                     interact_category(result);
+    //                 });
+    //         });
+    // });
 }
 
 
