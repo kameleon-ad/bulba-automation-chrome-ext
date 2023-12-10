@@ -196,29 +196,27 @@ function solve() {
         .map(element => element.innerHTML);
     let api_link = 'http://181.41.143.154:5000/api/bulba_v2';
 
-    console.log(find_block_by_question(A_OVERALL_QUALITY))
-
-    // fetch(api_link, {
-    //     method: 'POST',
-    //     headers: {
-    //         'Content-Type': 'application/x-www-form-urlencoded',
-    //     },
-    //     body: new URLSearchParams({
-    //         prompt,
-    //         response_a,
-    //         response_b,
-    //     }),
-    //     redirect: 'follow',
-    // }).then(res => res.json())
-    // .then(result => {
-    //     interact_related(result)
-    //         .then(() => {
-    //             check_category_select_dep()
-    //                 .then(() => {
-    //                     interact_category(result);
-    //                 });
-    //         });
-    // });
+    fetch(api_link, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams({
+            prompt,
+            response_a,
+            response_b,
+        }),
+        redirect: 'follow',
+    }).then(res => res.json())
+    .then(result => {
+        interact_related(result)
+            .then(() => {
+                check_category_select_dep()
+                    .then(() => {
+                        interact_category(result);
+                    });
+            });
+    });
 }
 
 
