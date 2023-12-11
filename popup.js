@@ -67,6 +67,27 @@ function solve() {
       return matches ? matches.join('') : '';
     }
 
+    const interact_with_vertical_slider = (ele = document.createElement("span"), pos, range) => {
+        const {width, height, bottom, left} = ele.getBoundingClientRect();
+        console.log(width, height, bottom, left);
+        const mousedownEvent = new MouseEvent('mousedown', {
+            view: window,
+            bubbles: true,
+            cancelable: true,
+            offsetX: 2 + (width / (range - 1) * pos) + left,
+            offsetY: height / 2 + bottom,
+        });
+        const mouseupEvent = new MouseEvent('mouseup', {
+            view: window,
+            bubbles: true,
+            cancelable: true,
+            offsetX: 2 + (width / (range - 1) * pos) + left,
+            offsetY: height / 2 + bottom,
+        });
+        ele.dispatchEvent(mousedownEvent);
+        ele.dispatchEvent(mouseupEvent);
+    }
+
     const find_block_by_question = (question, tag="span") => {
         let rlt = Array
             .from(document.querySelectorAll(tag))
@@ -120,7 +141,6 @@ function solve() {
                     const target_ele = Array.from(document.querySelectorAll("label.MuiFormControlLabel-root")).find(ele => {
                         return ele.innerText.includes(category);
                     });
-                    console.log(target_ele);
                     if (target_ele) {
                         target_ele.parentElement.querySelector("input").dispatchEvent(clickEvent);
                         return resolve();
@@ -144,7 +164,6 @@ function solve() {
     const type_and_result_interact = (block=document.createElement("div"), {type, reason}) => {
         select_item(block, {type});
         if (type > 0 && type < 3) {
-            console.log(block);
             const reason_area = block.nextElementSibling.querySelector("textarea");
             reason_area.value = reason;
             reason_area.dispatchEvent(changeEvent);
@@ -153,9 +172,20 @@ function solve() {
 
     const sxs_interact = (sxs_result) => {
         const sxs_score_block = find_block_by_question(SXS_SCORE_QUESTION);
-        const sxs_score_rail = sxs_score_block.querySelector("span.MuiSlider-rail");
+        const sxs_score_slider = sxs_score_block.querySelector("span.MuiSlider-marked");
+        interact_with_vertical_slider(sxs_score_slider, 3, 3);
         const sxs_block = find_block_by_question(SXS_SCORE_EXPLANATION_QUESTION, "div");
         writing_value(sxs_block.querySelector("textarea"), sxs_result.sxs.why);
+    };
+
+    const sliding_and_result = (block=document.createElement("div"), {type, reason}, range) => {
+        const slider = block.querySelector("span.MuiSlider-marked");
+        interact_with_vertical_slider(slider, type, range);
+        if (reason) {
+            const reason_area = block.nextElementSibling.querySelector("textarea");
+            reason_area.value = reason;
+            reason_area.dispatchEvent(changeEvent);
+        }
     };
 
     const interact_category = (result) => {
@@ -167,12 +197,12 @@ function solve() {
             clarity_block.querySelectorAll('input')[result.category.clarity].dispatchEvent(clickEvent);
             expertise_level.querySelectorAll('input')[1].dispatchEvent(clickEvent);
             complexity_block.querySelectorAll('input')[result.category.complexity].dispatchEvent(clickEvent);
-            console.log(estimation_time_block);
-            console.log(estimation_time_block.querySelector("input"))
             writing_value(estimation_time_block.querySelector("input"), ["15", "45", "75"][result.category.complexity]);
 
             const truthful_a_block = find_block_by_question(A_TRUTHFUL_CORRECT_QUESTION);
             const truthful_b_block = find_block_by_question(B_TRUTHFUL_CORRECT_QUESTION);
+            const verbose_a_block = find_block_by_question(A_HOW_VERBOSE_QUESTION);
+            const verbose_b_block = find_block_by_question(B_HOW_VERBOSE_QUESTION);
             const safe_a_block = find_block_by_question(A_SAFE_QUESTION);
             const safe_b_block = find_block_by_question(B_SAFE_QUESTION);
             const rate_overall_quality_a_block = find_block_by_question(A_OVERALL_QUALITY);
@@ -181,6 +211,8 @@ function solve() {
 
             type_and_result_interact(truthful_a_block, result.truthful_and_correct.A);
             type_and_result_interact(truthful_b_block, result.truthful_and_correct.B);
+            sliding_and_result(verbose_a_block, result.verbose.A)
+            sliding_and_result(verbose_b_block, result.verbose.B)
             type_and_result_interact(safe_a_block, result.safe_and_harmless.A);
             type_and_result_interact(safe_b_block, result.safe_and_harmless.B);
             select_item(rate_overall_quality_a_block, result.overall_quality.A);
@@ -238,7 +270,6 @@ function upload() {
         const task_id_element = document.querySelectorAll('div > strong + em')[1];
         task_id = task_id_element.textContent.trim();
     }
-    console.log(instruction, prompt, response_a, response_b);
     
     fetch(upload_url, {
         method: 'POST',
