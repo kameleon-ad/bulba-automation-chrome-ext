@@ -199,8 +199,12 @@ function solve() {
             complexity_block.querySelectorAll('input')[result.category.complexity].dispatchEvent(clickEvent);
             writing_value(estimation_time_block.querySelector("input"), ["15", "45", "75"][result.category.complexity]);
 
+            const follow_instruction_a_block = find_block_by_question(A_FOLLOW_INSTRUCTION_QUESTION);
+            const follow_instruction_b_block = find_block_by_question(B_FOLLOW_INSTRUCTION_QUESTION);
             const truthful_a_block = find_block_by_question(A_TRUTHFUL_CORRECT_QUESTION);
             const truthful_b_block = find_block_by_question(B_TRUTHFUL_CORRECT_QUESTION);
+            const well_written_a_block = find_block_by_question(A_WELL_WRITTEN_QUESTION);
+            const well_written_b_block = find_block_by_question(B_WELL_WRITTEN_QUESTION);
             const verbose_a_block = find_block_by_question(A_HOW_VERBOSE_QUESTION);
             const verbose_b_block = find_block_by_question(B_HOW_VERBOSE_QUESTION);
             const safe_a_block = find_block_by_question(A_SAFE_QUESTION);
@@ -209,8 +213,12 @@ function solve() {
             const rate_overall_quality_b_block = find_block_by_question(B_OVERALL_QUALITY);
             const confidence_block = find_block_by_question(SXS_CONFIDENCE_QUESTION);
 
+            type_and_result_interact(follow_instruction_a_block, result.ftw.follow_instruction.A);
+            type_and_result_interact(follow_instruction_b_block, result.ftw.follow_instruction.B);
             type_and_result_interact(truthful_a_block, result.truthful_and_correct.A);
             type_and_result_interact(truthful_b_block, result.truthful_and_correct.B);
+            type_and_result_interact(well_written_a_block, result.ftw.well_written.A);
+            type_and_result_interact(well_written_b_block, result.ftw.well_written.B);
             sliding_and_result(verbose_a_block, result.verbose.A)
             sliding_and_result(verbose_b_block, result.verbose.B)
             type_and_result_interact(safe_a_block, result.safe_and_harmless.A);
