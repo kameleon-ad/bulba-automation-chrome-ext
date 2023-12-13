@@ -77,6 +77,25 @@ function solve() {
         submit_btn.dispatchEvent(clickEvent);
     };
 
+    const get_remain_time = () => {
+        const clock_text = document.getElementById("claim_timer_parent_element").children[2].children[1].children[1].children[0].innerText;
+        const parser = /(\d+)\s*hours?,\s*(\d+)\s*minutes?/;
+        
+        console.log(clock_text);
+    }
+    get_remain_time();
+
+    const visit_prompt_response = (period = 5) => {
+        const next_btn = document.querySelectorAll("button>span>svg")[1].parentElement.parentElement;
+        for (let idx = 1; idx < 4; idx++) {
+            setTimeout(() => {
+                next_btn.dispatchEvent(clickEvent);
+            }, period * idx * 1000);
+        }
+    };
+
+    visit_prompt_response();
+
     const interact_with_vertical_slider = (ele = document.createElement("span"), pos, range) => {
         const {width, height, bottom, left} = ele.getBoundingClientRect();
         console.log(width, height, bottom, left);
