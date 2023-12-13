@@ -52,13 +52,16 @@ function solve() {
     const B_WELL_WRITTEN_QUESTION = "Is Response B well written? *";
     const A_HOW_VERBOSE_QUESTION = "How verbose is Response A?";
     const B_HOW_VERBOSE_QUESTION = "How verbose is Response B?";
-    const A_OVERALL_QUALITY = "Rate Response A’s overall quality. *";
-    const B_OVERALL_QUALITY = "Rate Response B’s overall quality. *";
     const A_SAFE_QUESTION = "How safe and harmless is Response A? *";
     const B_SAFE_QUESTION = "How safe and harmless is Response B? *";
+    const A_OVERALL_QUALITY = "Rate Response A’s overall quality. *";
+    const B_OVERALL_QUALITY = "Rate Response B’s overall quality. *";
+    const A_ESTIMATE_TIME_QUESTION = "Estimate how long it would take you to answer this prompt starting from Model A response. *";
+    const B_ESTIMATE_TIME_QUESTION = "Estimate how long it would take you to answer this prompt starting from Model B response. *";
     const SXS_SCORE_QUESTION = "Side by Side (SxS) Score";
     const SXS_SCORE_EXPLANATION_QUESTION = "SxS Score Explanation *";
     const SXS_CONFIDENCE_QUESTION = "SxS Confidence: Rate your confidence level in your assessment *";
+
     function extractAlphabets(str) {
       // This regex matches any alphabetic character
       const matches = str.match(/[A-Za-z]+/g);
@@ -66,6 +69,13 @@ function solve() {
       // Join the array elements into a single string
       return matches ? matches.join('') : '';
     }
+
+    const submit = (second) => {
+        const footer_right_block = document.querySelector("div.task-footer__right ");
+        const submit_btn = footer_right_block.children[1].querySelector("button");
+
+        submit_btn.dispatchEvent(clickEvent);
+    };
 
     const interact_with_vertical_slider = (ele = document.createElement("span"), pos, range) => {
         const {width, height, bottom, left} = ele.getBoundingClientRect();
@@ -173,9 +183,9 @@ function solve() {
     const sxs_interact = (sxs_result) => {
         const sxs_score_block = find_block_by_question(SXS_SCORE_QUESTION);
         const sxs_score_slider = sxs_score_block.querySelector("span.MuiSlider-marked");
-        interact_with_vertical_slider(sxs_score_slider, 3, 3);
+        interact_with_vertical_slider(sxs_score_slider, sxs_result.rate_which_is_better, 7);
         const sxs_block = find_block_by_question(SXS_SCORE_EXPLANATION_QUESTION, "div");
-        writing_value(sxs_block.querySelector("textarea"), sxs_result.sxs.why);
+        writing_value(sxs_block.querySelector("textarea"), sxs_result.why);
     };
 
     const sliding_and_result = (block=document.createElement("div"), {type, reason}, range) => {
@@ -194,10 +204,11 @@ function solve() {
             const expertise_level = find_block_by_question(EXPERTISE_LEVEL_QUESTION);
             const complexity_block = find_block_by_question(COMPLEXITY_QUESTION);
             const estimation_time_block = find_block_by_question(ESTIMATION_TIME_QUESTION, "div");
+            const estimizted_time = [15, 45, 75][result.category.complexity];
             clarity_block.querySelectorAll('input')[result.category.clarity].dispatchEvent(clickEvent);
             expertise_level.querySelectorAll('input')[1].dispatchEvent(clickEvent);
             complexity_block.querySelectorAll('input')[result.category.complexity].dispatchEvent(clickEvent);
-            writing_value(estimation_time_block.querySelector("input"), ["15", "45", "75"][result.category.complexity]);
+            writing_value(estimation_time_block.querySelector("input"), `${estimizted_time}`);
 
             const follow_instruction_a_block = find_block_by_question(A_FOLLOW_INSTRUCTION_QUESTION);
             const follow_instruction_b_block = find_block_by_question(B_FOLLOW_INSTRUCTION_QUESTION);
@@ -211,23 +222,32 @@ function solve() {
             const safe_b_block = find_block_by_question(B_SAFE_QUESTION);
             const rate_overall_quality_a_block = find_block_by_question(A_OVERALL_QUALITY);
             const rate_overall_quality_b_block = find_block_by_question(B_OVERALL_QUALITY);
+            const estimiated_time_a_block = find_block_by_question(A_ESTIMATE_TIME_QUESTION, "div");
+            const estimiated_time_b_block = find_block_by_question(B_ESTIMATE_TIME_QUESTION, "div");
             const confidence_block = find_block_by_question(SXS_CONFIDENCE_QUESTION);
+            
+            let {type: estimated_time_level_a} = result.ftw.overall_quality.A;
+            estimated_time_level_a *= (estimizted_time / 5)
+            let {type: estimated_time_level_b} = result.ftw.overall_quality.B;
+            estimated_time_level_b *= (estimizted_time / 5)
 
             type_and_result_interact(follow_instruction_a_block, result.ftw.follow_instruction.A);
             type_and_result_interact(follow_instruction_b_block, result.ftw.follow_instruction.B);
-            type_and_result_interact(truthful_a_block, result.truthful_and_correct.A);
-            type_and_result_interact(truthful_b_block, result.truthful_and_correct.B);
+            type_and_result_interact(truthful_a_block, result.ftw.truthful_and_correct.A);
+            type_and_result_interact(truthful_b_block, result.ftw.truthful_and_correct.B);
             type_and_result_interact(well_written_a_block, result.ftw.well_written.A);
             type_and_result_interact(well_written_b_block, result.ftw.well_written.B);
             sliding_and_result(verbose_a_block, result.verbose.A)
             sliding_and_result(verbose_b_block, result.verbose.B)
             type_and_result_interact(safe_a_block, result.safe_and_harmless.A);
             type_and_result_interact(safe_b_block, result.safe_and_harmless.B);
-            select_item(rate_overall_quality_a_block, result.overall_quality.A);
-            select_item(rate_overall_quality_b_block, result.overall_quality.B);
+            select_item(rate_overall_quality_a_block, result.ftw.overall_quality.A);
+            select_item(rate_overall_quality_b_block, result.ftw.overall_quality.B);
+            writing_value(estimiated_time_a_block.querySelector("input"), `${estimated_time_level_a}`);
+            writing_value(estimiated_time_b_block.querySelector("input"), `${estimated_time_level_b}`);
             confidence_block.querySelectorAll("input")[3].dispatchEvent(clickEvent);
 
-            sxs_interact(result.sxs);
+            sxs_interact(result.ftw.sxs);
         });
     }
 
