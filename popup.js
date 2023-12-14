@@ -18,6 +18,16 @@ document.getElementById('solve').addEventListener('click', () => {
 });
 
 
+document.getElementById('solve3').addEventListener('click', () => {
+    chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
+        chrome.scripting.executeScript({
+            target: {tabId: tabs[0].id},
+            function: solve,
+        });
+    });
+});
+
+
 // document.getElementById('upload-problem').addEventListener('click', () => {
 //     chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
 //         chrome.scripting.executeScript({
@@ -26,6 +36,27 @@ document.getElementById('solve').addEventListener('click', () => {
 //         });
 //     });
 // });
+
+
+function solve3() {
+    let [_, prompt, response_a, response_b] = Array
+        .from(document.getElementsByClassName('MuiPaper-root MuiPaper-elevation1 MuiPaper-rounded'))
+        .map(element => element.innerHTML);
+    let api_link = 'http://181.41.143.154:5000/api/bulba_v3';
+
+    fetch(api_link, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams({
+            prompt,
+            response_a,
+            response_b,
+        }),
+        redirect: 'follow',
+    })
+}
 
 
 function solve() {
