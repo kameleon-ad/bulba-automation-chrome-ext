@@ -12,7 +12,7 @@ document.getElementById('solve').addEventListener('click', () => {
     chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
         chrome.scripting.executeScript({
             target: {tabId: tabs[0].id},
-            function: solve3,
+            function: solve,
         });
     });
 });
@@ -22,7 +22,7 @@ document.getElementById('solve3').addEventListener('click', () => {
     chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
         chrome.scripting.executeScript({
             target: {tabId: tabs[0].id},
-            function: solve,
+            function: solve3,
         });
     });
 });
