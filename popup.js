@@ -225,8 +225,9 @@ function solve() {
         select_item(block, {type});
         if (reason) {
             const reason_area = block.nextElementSibling.querySelector("textarea");
-            reason_area?.value = reason;
-            reason_area?.dispatchEvent(changeEvent);
+            if (!reason_area) return;
+            reason_area.value = reason;
+            reason_area.dispatchEvent(changeEvent);
         }
     };
 
