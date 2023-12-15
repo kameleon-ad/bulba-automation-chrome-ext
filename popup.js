@@ -223,10 +223,10 @@ function solve() {
 
     const type_and_result_interact = (block=document.createElement("div"), {type, reason}) => {
         select_item(block, {type});
-        if (type > 0 && type < 3) {
+        if (reason) {
             const reason_area = block.nextElementSibling.querySelector("textarea");
-            reason_area.value = reason;
-            reason_area.dispatchEvent(changeEvent);
+            reason_area?.value = reason;
+            reason_area?.dispatchEvent(changeEvent);
         }
     };
 
@@ -283,8 +283,8 @@ function solve() {
 
             type_and_result_interact(follow_instruction_a_block, result.ftw.follow_instruction.A);
             type_and_result_interact(follow_instruction_b_block, result.ftw.follow_instruction.B);
-            type_and_result_interact(truthful_a_block, result.ftw.truthful_and_correct.A);
-            type_and_result_interact(truthful_b_block, result.ftw.truthful_and_correct.B);
+            type_and_result_interact(truthful_a_block, result.truthful_and_correct.A);
+            type_and_result_interact(truthful_b_block, result.truthful_and_correct.B);
             type_and_result_interact(well_written_a_block, result.ftw.well_written.A);
             type_and_result_interact(well_written_b_block, result.ftw.well_written.B);
             sliding_and_result(verbose_a_block, result.verbose.A)
