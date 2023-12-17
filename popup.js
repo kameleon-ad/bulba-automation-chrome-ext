@@ -302,7 +302,7 @@ const solve = (resolve) => () => {
             if (typeof(resolve) === "function") {
                 const footer_right_block = document.querySelector("div.task-footer__right ");
                 const submit_btn = footer_right_block.children[1].querySelector("button");
-                submit_btn.addEventListener(resolve);
+                submit_btn.addEventListener('click', resolve);
             }
         });
     }
@@ -372,7 +372,7 @@ function upload() {
     })
     .then(response => response.json())
     .then(() => {
-        alert("success");
+        console.log("success");
     })
     .catch(error => {
         alert("error");
