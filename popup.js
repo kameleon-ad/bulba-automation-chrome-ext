@@ -12,7 +12,7 @@ document.getElementById('solve').addEventListener('click', () => {
     chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
         chrome.scripting.executeScript({
             target: {tabId: tabs[0].id},
-            function: solve,
+            function: solve(),
         });
     });
 });
@@ -59,7 +59,7 @@ function solve3() {
 }
 
 
-function solve() {
+const solve = (resolve) => () => {
     const clickEvent = new MouseEvent('click', {
         'view': window,
         'bubbles': true,
@@ -299,6 +299,11 @@ function solve() {
             confidence_block.querySelectorAll("input")[3].dispatchEvent(clickEvent);
 
             sxs_interact(result.ftw.sxs);
+            if (typeof(resolve) === "function") {
+                const footer_right_block = document.querySelector("div.task-footer__right ");
+                const submit_btn = footer_right_block.children[1].querySelector("button");
+                submit_btn.addEventListener(resolve);
+            }
         });
     }
 
